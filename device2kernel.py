@@ -1,5 +1,9 @@
 import json
 
+COMMON_DEVICE = [
+    'android_device_asus_flo',
+]
+
 with open('out.json') as f:
     mapping = json.load(f)
 
@@ -23,6 +27,8 @@ def simplify_reverse_deps(repo):
     res = set()
     for i in reverse_deps[repo]:
         res.update(simplify_reverse_deps(i))
+    if repo in COMMON_DEVICE:
+        res.add(repo)
     return res
 
 for repo in reverse_deps:
