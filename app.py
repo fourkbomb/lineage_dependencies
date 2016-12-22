@@ -10,19 +10,29 @@ with open('token') as f:
     g = Github(f.readline().strip(), per_page=100)
 
 
+print(g.rate_limiting_resettime)
+
 org = g.get_organization('LineageOS')
 
+# supported branches, newest to oldest
+CUR_BRANCHES = ['cm-14.1', 'cm-13.0']
+
 def get_cm_dependencies(repo):
-    try:
-        branch = repo.get_branch('cm-14.1')
-    except github.GithubException:
+    branch = None
+    for b in CUR_BRANCHES:
+        try:
+            branch = repo.get_branch(b)
+            break
+        except github.GithubException:
+            continue
+
+    if branch is None:
         return None
 
     sha = branch.commit.sha
     try:
         tree = repo.get_git_tree(sha)
     except github.GithubException:
-        print(repo.name, sha)
         return None
     blob_sha = None
     for el in tree.tree:
@@ -79,8 +89,12 @@ with concurrent.futures.ThreadPoolExecutor() as executor:
 
     print(other_repos)
     for name in other_repos:
-        repo = org.get_repo(name)
-        futures[executor.submit(get_cm_dependencies, repo)] = name
+        print(name)
+        try:
+            repo = org.get_repo(name)
+            futures[executor.submit(get_cm_dependencies, repo)] = name
+        except Exception:
+            continue
 
     other_repos = {}
     for future in concurrent.futures.as_completed(futures):
