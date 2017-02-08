@@ -7,7 +7,7 @@ from github import Github
 from base64 import b64decode
 
 with open('token') as f:
-    g = Github(f.readline().strip(), per_page=100)
+    g = Github(f.readline().strip(), per_page=200)
 
 
 print(g.rate_limiting_resettime)
@@ -36,7 +36,7 @@ def get_cm_dependencies(repo):
         return None
     blob_sha = None
     for el in tree.tree:
-        if el.path == 'cm.dependencies':
+        if el.path == 'cm.dependencies' or el.path == 'lineage.dependencies':
             blob_sha = el.sha
             break
 
@@ -66,7 +66,7 @@ other_repos = set()
 
 
 with concurrent.futures.ThreadPoolExecutor() as executor:
-    for repo in org.get_repos():
+    for repo in g.search_repositories('user:%s _device_'%org.name):
         if '_device_' not in repo.name:
             continue
         print(n, repo.name)
