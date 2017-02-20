@@ -54,7 +54,8 @@ def get_cm_dependencies(repo):
     for el in cmdeps:
         if '_device_' not in el['repository']:
             non_device_repos.add(el['repository'])
-        mydeps.append(el['repository'])
+        depbranch = el.get('branch', branch.name)
+        mydeps.append({'repo': el['repository'], 'branch': depbranch})
 
     return [mydeps, non_device_repos]
 
