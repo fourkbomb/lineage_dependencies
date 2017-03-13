@@ -27,8 +27,8 @@ for repo in mapping:
         if codename in devices:
             print("warning: dupe: %s"%codename)
 
-        devices[codename] = list(simplify_reverse_deps({'repo': repo}, codename))
+        devices[codename] = sorted(list(simplify_reverse_deps({'repo': repo}, codename)))
 
 with open('devices.json', 'w') as f:
     out = {'devices': devices, 'suffixes': suffixes}
-    json.dump(out, f, indent=4)
+    json.dump(out, f, indent=4, sort_keys=True)
