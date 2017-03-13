@@ -16,9 +16,9 @@ for device in mapping:
     if device not in reverse_deps:
         reverse_deps[device] = []
     for repo in deps:
-        if repo not in reverse_deps:
-            reverse_deps[repo] = []
-        reverse_deps[repo].append(device)
+        if repo['repo'] not in reverse_deps:
+            reverse_deps[repo['repo']] = []
+        reverse_deps[repo['repo']].append(device)
 
 
 def simplify_reverse_deps(repo):
