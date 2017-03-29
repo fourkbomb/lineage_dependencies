@@ -67,7 +67,7 @@ other_repos = set()
 
 
 with concurrent.futures.ThreadPoolExecutor() as executor:
-    for repo in g.search_repositories('user:%s _device_'%org.name):
+    for repo in g.get_organization('LineageOS').get_repos():
         if '_device_' not in repo.name:
             continue
         print(n, repo.name)
